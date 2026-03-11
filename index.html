@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Zaki 💗</title>
+    <style>
+        :root {
+            --pink: #ffdae9;
+            --blue: #e0f2ff;
+            --dark-pink: #ff85a1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--pink), var(--blue));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #555;
+        }
+
+        /* --- Sparkles & Floating Hearts --- */
+        .heart-float {
+            position: fixed;
+            color: var(--dark-pink);
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 5s linear forwards;
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Photo & Glowing Heart --- */
+        .photo-container {
+            margin-top: 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .my-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 0 20px rgba(255, 133, 161, 0.5);
+            object-fit: cover;
+        }
+
+        .glow-heart {
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 2px solid var(--dark-pink);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        /* --- Main Message (Typewriter) --- */
+        .message-box {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px;
+            max-width: 80%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        #typewriter {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d63384;
+            min-height: 3em;
+        }
+
+        /* --- Buttons & Interactions --- */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 50px;
+            z-index: 10;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+
+        button:hover { transform: scale(1.1); background: var(--dark-pink); color: white; }
+
+        /* --- Teddy & Hug --- */
+        #teddy-container {
+            font-size: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .hug-animation {
+            animation: hugAction 1s ease-in-out;
+        }
+
+        @keyframes hugAction {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5) rotate(10deg); }
+        }
+
+        /* --- Overlays & Popups --- */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 100px rgba(0,0,0,0.2);
+            z-index: 100;
+            text-align: center;
+        }
+
+        /* --- Cursor Trail --- */
+        .trail {
+            position: fixed;
+            pointer-events: none;
+            color: var(--dark-pink);
+            font-size: 15px;
+            z-index: 999;
+        }
+
+        /* --- Box/Gift --- */
+        .gift-box {
+            font-size: 60px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="photo-container">
+        <div class="glow-heart"></div>
+        <img src="me.jpg" alt="Me" class="my-photo" onerror="this.src='https://via.placeholder.com/150/ffdae9/ffffff?text=My+Photo'">
+    </div>
+
+    <div class="message-box">
+        <p id="typewriter"></p>
+    </div>
+
+    <div id="teddy-container" onclick="giveHug()">🧸</div>
+    <p style="font-size: 0.8rem;">Tap the teddy for a hug</p>
+
+    <div class="button-group">
+        <button onclick="showLoveLetter()">💌 Love Letter</button>
+        <button onclick="fixMood()">🌈 Mood Fix</button>
+        <button onclick="openGift()">🎁 Secret Surprise</button>
+    </div>
+
+    <div id="clouds"></div>
+
+    <div id="letterPopup" class="overlay">
+        <h3>My Dearest Zaki,</h3>
+        <p>I know things feel heavy right now, but you don't have to carry it alone. You are the strongest, most amazing person I know. Just take a deep breath. I'm right here. 💗</p>
+        <button onclick="closePopup('letterPopup')">Close</button>
+    </div>
+
+    <div id="giftPopup" class="overlay">
+        <div class="gift-box" onclick="explodeConfetti()">🎁</div>
+        <p>Click the box to open!</p>
+        <button onclick="closePopup('giftPopup')">Close</button>
+    </div>
+
+    <script>
+        // --- 1. Heart Explosion on Start ---
+        window.onload = () => {
+            for(let i=0; i<30; i++) {
+                setTimeout(createHeart, i * 50);
+            }
+            typeWriter();
+            createStickerRain();
+        };
+
+        // --- 2. Typewriter Effect ---
+        const text = "Hey my love... I love you Zaki. I am there for you and I am super proud of you. ❤️";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        // --- 3. Cursor Heart Trail ---
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('span');
+            trail.innerHTML = '💗';
+            trail.className = 'trail';
+            trail.style.left = e.pageX + 'px';
+            trail.style.top = e.pageY + 'px';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                setTimeout(() => trail.remove(), 500);
+            }, 800);
+        });
+
+        // --- 4. Floating Hearts & Stickers ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '💗';
+            heart.className = 'heart-float';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        function createStickerRain() {
+            const stickers = ['🧸', '✨', '🌈', '☁️', '🌸'];
+            setInterval(() => {
+                const s = document.createElement('div');
+                s.innerHTML = stickers[Math.floor(Math.random() * stickers.length)];
+                s.className = 'heart-float';
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.top = '-50px';
+                s.style.animation = 'floatDown 5s linear forwards';
+                document.body.appendChild(s);
+            }, 1000);
+        }
+
+        // --- 5. Features ---
+        function showLoveLetter() { document.getElementById('letterPopup').style.display = 'block'; }
+        
+        function openGift() { document.getElementById('giftPopup').style.display = 'block'; }
+
+        function closePopup(id) { document.getElementById(id).style.display = 'none'; }
+
+        function giveHug() {
+            const teddy = document.getElementById('teddy-container');
+            teddy.classList.add('hug-animation');
+            setTimeout(() => teddy.classList.remove('hug-animation'), 1000);
+            alert("Sent you a big, warm hug! 🫂❤️");
+        }
+
+        function fixMood() {
+            document.body.style.background = "linear-gradient(135deg, #fff9c4, #ffdae9)";
+            alert("Mood Fix Activated: Adding extra sunshine and sparkles! ✨☀️");
+            for(let i=0; i<20; i++) createHeart();
+        }
+
+        function explodeConfetti() {
+            alert("🎉 BOOM! A box full of kisses and strength for you! 💋❤️");
+            for(let i=0; i<50; i++) createHeart();
+        }
+
+        // --- 6. Floating Messages ---
+        const messages = ["You are enough", "I'm so proud of you", "Take it easy", "You are loved", "Breathe 💗"];
+        setInterval(() => {
+            const cloud = document.createElement('div');
+            cloud.className = 'heart-float';
+            cloud.style.background = 'white';
+            cloud.style.padding = '10px';
+            cloud.style.borderRadius = '20px';
+            cloud.style.fontSize = '12px';
+            cloud.style.left = Math.random() * 80 + 'vw';
+            cloud.innerHTML = '☁️ ' + messages[Math.floor(Math.random() * messages.length)];
+            document.body.appendChild(cloud);
+        }, 4000);
+
+    </script>
+
+    <style>
+        @keyframes floatDown {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</body>
+</html>
